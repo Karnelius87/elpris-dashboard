@@ -279,8 +279,8 @@
     { id: 0, namn: "Mycket billig", farg: "#34d17e", ljus: "#8ef0b8", text: "#0b0f24" },
     { id: 1, namn: "Billig",        farg: "#a6dc4f", ljus: "#d6f59a", text: "#0b0f24" },
     { id: 2, namn: "Normal",        farg: "#ffd24a", ljus: "#ffe9a3", text: "#0b0f24" },
-    { id: 3, namn: "Dyr",           farg: "#ff9a3c", ljus: "#ffc690", text: "#0b0f24" },
-    { id: 4, namn: "Mycket dyr",    farg: "#ff5468", ljus: "#ff9daa", text: "#0b0f24" }
+    { id: 3, namn: "Dyr",           farg: "#ff6a3d", ljus: "#ffa384", text: "#0b0f24" },
+    { id: 4, namn: "Mycket dyr",    farg: "#ff2e55", ljus: "#ff7f96", text: "#0b0f24" }
   ];
 
   var VECKODAG = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
@@ -429,12 +429,16 @@
       var rel = snitt > 0.05 ? p / snitt : 1 + (p - snitt) * 5;
       if (rel < 0.7) niva = 0;
       else if (rel < 0.9) niva = 1;
-      else if (rel <= 1.12) niva = 2;
-      else if (rel <= 1.35) niva = 3;
+      else if (rel <= 1.08) niva = 2;
+      else if (rel <= 1.25) niva = 3;
       else niva = 4;
       // Fasta gränser
       if (p < 0.15) niva = 0;
       else if (p < 0.30 && niva > 1) niva = 1;
+      // Över 5 kr/kWh totalt är alltid mycket dyrt, över 4 kr minst dyrt
+      var tot = totalKr(p);
+      if (tot >= 5) niva = 4;
+      else if (tot >= 4 && niva < 3) niva = 3;
       kv[i].niva = niva;
     }
   }
