@@ -14,7 +14,7 @@ En sida för en gammal Android-platta som visar elpriset per kvart för idag och
 | `nat` | `77.3` | Nätavgift öre/kWh inkl. moms |
 | `skatt` | `0` | Energiskatt öre/kWh om den inte ingår i nätavgiften (2026: 45) |
 | `paslag` | `11.9` | Elhandlarens påslag och avgifter öre/kWh inkl. moms |
-| `andel` | `33` | Procent av totalkostnaden som visas som "ert pris" |
+| `andel` | `100` | Procent av totalkostnaden som visas, t.ex. 33 för en egen andel |
 | `fast` | `0` | Fasta avgifter kr/månad, visas bara i foten |
 | `natt` | `23-6` | Svart skärm mellan dessa timmar, `av` stänger av |
 | `tempurl` | – | Adress till JSON `{"inne": 21.5}` för innetemperatur |

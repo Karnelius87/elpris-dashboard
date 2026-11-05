@@ -175,7 +175,7 @@
 
   <div class="glas hero">
     <div>
-      <div class="etikett" id="heroRubrik">Ert elpris just nu</div>
+      <div class="etikett" id="heroRubrik">Elpriset just nu</div>
       <div class="hero-pris"><span id="nuPris" style="font-size:inherit;color:#fff;margin:0;letter-spacing:inherit;font-weight:inherit">–</span><span>kr/kWh</span></div>
       <div class="niva-rad"><span class="chip" id="nuNiva"><i style="background:#888"></i>Hämtar elpris…</span><span class="tips" id="nuTips"></span></div>
     </div>
@@ -230,7 +230,7 @@
   var SKATT = tal("skatt", 0, 0, 100);     // energiskatt om den inte redan ingår i nätavgiften (2026: 36 öre + moms = 45)
   var NAT = tal("nat", 77.3, 0, 200);      // E.ON nätavgift per kWh
   var PASLAG = tal("paslag", 11.9, 0, 50); // Tibber: påslag 7,5 + rörliga avgifter 4,4 öre inkl. moms
-  var ANDEL = tal("andel", 33, 1, 100) / 100; // andel av totalkostnaden som de själva betalar
+  var ANDEL = tal("andel", 100, 1, 100) / 100; // andel av totalkostnaden som visas (100 = hela priset)
   var FAST = tal("fast", 0, 0, 5000);      // fasta avgifter kr/månad (nätabonnemang 25 A + Tibber 49 kr), visas bara i foten
   var OMRADESNAMN = { SE1: "SE1 Luleå", SE2: "SE2 Sundsvall", SE3: "SE3 Stockholm", SE4: "SE4 Malmö" };
 
