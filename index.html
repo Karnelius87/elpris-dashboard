@@ -616,7 +616,7 @@
     for (var i = 0; i < kv.length; i++) { var v = erKr(kv[i].pris); if (v < lo) lo = v; if (v > hi) hi = v; }
     var stegLista = [0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 5], ySteg = 1;
     for (i = 0; i < stegLista.length; i++) { if ((hi - lo) / stegLista[i] <= 4) { ySteg = stegLista[i]; break; } }
-    var bas = Math.floor(lo / ySteg) * ySteg; if (bas > 0 && lo - bas < ySteg * 0.3) bas -= ySteg; if (bas < 0 && lo >= 0) bas = 0;
+    var bas = Math.floor(lo / ySteg) * ySteg; if (bas < 0 && lo >= 0) bas = 0;
     var topp = Math.ceil(hi / ySteg) * ySteg; if (topp - hi < ySteg * 0.15) topp += ySteg;
     var min = bas, range = topp - bas;
 
