@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Steg 1</title></head>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="manifest" href="manifest.json">
+<title>Steg 1</title></head>
 <body style="font-family:Arial,sans-serif;font-size:24px;padding:20px">
 <h1>Steg 1: ren text</h1>
 <p>Om du ser detta fungerar webbläsaren.</p>
 <p>JavaScript: <b id="js">AV (JavaScript körs inte)</b></p>
 <p style="font-size:16px;color:#555">Webbläsare: <span id="ua"></span></p>
 <p><a href="steg2.html">Gå till steg 2 →</a></p>
+<p style="font-size:18px">Direkt till: <a href="steg3.html">steg 3</a> · <a href="steg4.html">steg 4</a> · <a href="steg5.html">steg 5</a></p>
 <script>
 document.getElementById("js").innerHTML = "PÅ";
 document.getElementById("ua").innerHTML = navigator.userAgent;
