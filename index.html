@@ -611,11 +611,14 @@
     var t1 = new Date(idag.getFullYear(), idag.getMonth(), idag.getDate() + 2).getTime();
     var harImorgon = !!(data[datumNyckel(plusDagar(idag, 1))] || []).length;
     if (!harImorgon) t1 = imorgon;
+    // Visa bara från innevarande timme och framåt
+    var nuH = new Date(nu); nuH.setMinutes(0, 0, 0);
+    if (nuH.getTime() > t0 && nuH.getTime() < t1) t0 = nuH.getTime();
     var span = t1 - t0;
 
     // Y-skala i det pris som visas (kr/kWh), med "snygga" steg
     var lo = Infinity, hi = -Infinity;
-    for (var i = 0; i < kv.length; i++) { var v = erKr(kv[i].pris); if (v < lo) lo = v; if (v > hi) hi = v; }
+    for (var i = 0; i < kv.length; i++) { if (kv[i].start < t0 || kv[i].start >= t1) continue; var v = erKr(kv[i].pris); if (v < lo) lo = v; if (v > hi) hi = v; }
     var stegLista = [0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 5], ySteg = 1;
     for (i = 0; i < stegLista.length; i++) { if ((hi - lo) / stegLista[i] <= 4) { ySteg = stegLista[i]; break; } }
     var bas = Math.floor(lo / ySteg) * ySteg; if (bas < 0 && lo >= 0) bas = 0;
@@ -647,7 +650,8 @@
     // Tidsaxel
     var steg = harImorgon ? 3 : 2;
     var a = "";
-    for (var t = t0; t <= t1; t += steg * 3600000) {
+    var forstaTick = new Date(t0); forstaTick.setHours(Math.ceil(forstaTick.getHours() / steg) * steg, 0, 0, 0);
+    for (var t = forstaTick.getTime(); t <= t1; t += steg * 3600000) {
       var tim = new Date(t).getHours();
       if (t === t1 || (harImorgon && t === imorgon)) continue;
       a += '<span style="left:' + ((t - t0) / span * 100).toFixed(3) + '%">' + tva(tim) + "</span>";
