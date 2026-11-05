@@ -270,9 +270,9 @@
 
   // timmar = hur länge den drar el, kwh = ungefärlig förbrukning per körning
   var MASKINER = [
-    { id: "tvatt", namn: "Tvätt",  ikon: "\uD83D\uDC55", timmar: 2,   kwh: 1.0, tidigast: 7, senast: 22 },
-    { id: "disk",  namn: "Disk",   ikon: "\uD83C\uDF7D\uFE0F", timmar: 2,   kwh: 1.0, tidigast: 6, senast: 24 },
-    { id: "tork",  namn: "Tork",   ikon: "\uD83C\uDF00", timmar: 2  , kwh: 2.5, tidigast: 7, senast: 22 }
+    { id: "tvatt", namn: "Tvätt",  ikon: "\uD83D\uDC55", timmar: 2,   kwh: 1.0, tidigast: 0, senast: 24, timer: true },
+    { id: "disk",  namn: "Disk",   ikon: "\uD83C\uDF7D\uFE0F", timmar: 2,   kwh: 1.0, tidigast: 0, senast: 24, timer: true },
+    { id: "tork",  namn: "Tork",   ikon: "\uD83C\uDF00", timmar: 2  , kwh: 2.5, tidigast: 0, senast: 24, timer: true }
   ];
 
   var NIVAER = [
@@ -456,7 +456,7 @@
       if (sist.slut - forst.start !== antal * 900000) continue; // hål i datan
       var h0 = timmeIDygnet(forst.start);
       var h1 = h0 + maskin.timmar;
-      if (h0 < maskin.tidigast || h1 > maskin.senast + 0.001) continue;
+      if (h0 < maskin.tidigast || (maskin.senast < 24 && h1 > maskin.senast + 0.001)) continue;
       var summa = 0;
       for (var j = i; j < i + antal; j++) summa += kv[j].pris;
       var snitt = summa / antal;
@@ -562,7 +562,7 @@
     } else if (antalJa === 0) {
       ikoner = ikoner.replace(/opacity:\.35/g, "opacity:1");
       svar = { titel: "Vänta med att köra", ljus: NIVAER[2].ljus,
-               under: forsta ? "Billigare " + dagOrd(forsta.b.start) + " från kl " + klockText(forsta.b.start) : "Morgondagens priser kommer runt kl 13",
+               under: forsta ? "Billigast " + dagOrd(forsta.b.start) + " från kl " + klockText(forsta.b.start) + (new Date(forsta.b.start).getHours() < 6 ? ", ställ timern" : "") : "Morgondagens priser kommer runt kl 13",
                spara: spara > 0.05 ? "Sparar upp till " + kostnadText(spara) + " kr" : "" };
     } else {
       var t = [];
