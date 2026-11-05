@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Steg 2</title></head>
+<body style="font-family:Arial,sans-serif;font-size:24px;padding:20px">
+<h1>Steg 2: hämta elpriset</h1>
+<p id="status">Hämtar…</p>
+<p style="font-size:16px;color:#555">Webbläsare: <span id="ua"></span></p>
+<p><a href="steg3.html">Gå till steg 3 →</a></p>
+<script>
+document.getElementById("ua").innerHTML = navigator.userAgent;
+function tva(n) { return (n < 10 ? "0" : "") + n; }
+var d = new Date();
+var url = "https://www.elprisetjustnu.se/api/v1/prices/" + d.getFullYear() + "/" + tva(d.getMonth() + 1) + "-" + tva(d.getDate()) + "_SE4.json";
+var x = new XMLHttpRequest();
+x.open("GET", url, true);
+x.onreadystatechange = function () {
+  if (x.readyState !== 4) return;
+  var el = document.getElementById("status");
+  if (x.status === 200) {
+    try {
+      var lista = JSON.parse(x.responseText);
+      el.innerHTML = "OK! Hämtade " + lista.length + " kvartar. Första spotpris: " + lista[0].SEK_per_kWh + " kr";
+    } catch (e) { el.innerHTML = "Fel vid läsning: " + e.message; }
+  } else { el.innerHTML = "Kunde inte hämta (status " + x.status + ")"; }
+};
+x.send();
+</script>
+</body></html>
