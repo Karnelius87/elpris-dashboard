@@ -1,7 +1,7 @@
 {
   "name": "Elpriset idag",
   "short_name": "Elpris",
-  "start_url": "./",
+  "start_url": "./app.html",
   "scope": "./",
   "display": "fullscreen",
   "orientation": "any",
