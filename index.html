@@ -100,6 +100,10 @@
   .dra-tips { font-size: 14px; color: rgba(255,255,255,.5); text-align: right; }
   .diagram { position: relative; height: 190px; margin-top: 30px; border-bottom: 1px solid rgba(255,255,255,.18); }
   .stapel { position: absolute; bottom: 0; border-radius: 4px 4px 1px 1px; }
+  .diagram-yta { position: relative; margin-left: 46px; }
+  .ylinje { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed rgba(255,255,255,.12); }
+  .ylinje.y0 { border-top: 0; }
+  .ylinje span { position: absolute; right: 100%; margin-right: 10px; top: -9px; font-size: 13px; line-height: 18px; color: rgba(255,255,255,.5); white-space: nowrap; }
   .nu-linje { position: absolute; top: -12px; bottom: -4px; width: 2px; background: #fff; margin-left: -1px; box-shadow: 0 0 10px rgba(255,255,255,.8); }
   .nu-linje span { position: absolute; top: -26px; left: -19px; width: 40px; text-align: center; font-size: 12px; font-weight: 700;
                    background: #fff; color: #0b0f24; border-radius: 10px; padding: 2px 0; letter-spacing: .5px; }
@@ -194,15 +198,17 @@
 
   <div class="glas diagram-ruta">
     <div class="diagram-titel">
-      <div><h2>Elpris per kvart</h2></div>
+      <div><h2>Elpris per kvart <span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.5);margin-left:6px">kr/kWh</span></h2></div>
       <div class="dra-tips">Dra med fingret för att se priset</div>
     </div>
-    <div style="position:relative">
-      <div class="diagram" id="diagram"></div>
-      <div class="bubbla" id="bubbla"></div>
+    <div class="diagram-yta">
+      <div style="position:relative">
+        <div class="diagram" id="diagram"></div>
+        <div class="bubbla" id="bubbla"></div>
+      </div>
+      <div class="axel" id="axel"></div>
+      <div class="dagnamn" id="dagnamn"></div>
     </div>
-    <div class="axel" id="axel"></div>
-    <div class="dagnamn" id="dagnamn"></div>
     <div class="forklaring" id="forklaring"></div>
   </div>
 
@@ -541,10 +547,14 @@
     if (!harImorgon) t1 = imorgon;
     var span = t1 - t0;
 
-    var max = 0.1, min = 0;
-    for (var i = 0; i < kv.length; i++) { if (kv[i].pris > max) max = kv[i].pris; if (kv[i].pris < min) min = kv[i].pris; }
-    max = max * 1.05;
-    var range = max - min;
+    // Y-skala i det pris som visas (kr/kWh), med "snygga" steg
+    var lo = Infinity, hi = -Infinity;
+    for (var i = 0; i < kv.length; i++) { var v = erKr(kv[i].pris); if (v < lo) lo = v; if (v > hi) hi = v; }
+    var stegLista = [0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 5], ySteg = 1;
+    for (i = 0; i < stegLista.length; i++) { if ((hi - lo) / stegLista[i] <= 4) { ySteg = stegLista[i]; break; } }
+    var bas = Math.floor(lo / ySteg) * ySteg; if (bas > 0 && lo - bas < ySteg * 0.3) bas -= ySteg; if (bas < 0 && lo >= 0) bas = 0;
+    var topp = Math.ceil(hi / ySteg) * ySteg; if (topp - hi < ySteg * 0.15) topp += ySteg;
+    var min = bas, range = topp - bas;
 
     var h = "";
     for (i = 0; i < kv.length; i++) {
@@ -552,11 +562,15 @@
       if (k.start < t0 || k.start >= t1) continue;
       var left = (k.start - t0) / span * 100;
       var w = (k.slut - k.start) / span * 100;
-      var hojd = Math.max(1.5, (Math.max(k.pris, 0) - Math.max(min, 0)) / range * 100);
+      var hojd = Math.max(1.5, (erKr(k.pris) - min) / range * 100);
       var forbi = k.slut <= nu;
       h += '<div class="stapel" style="left:' + left.toFixed(3) + "%;width:" + (w * 0.8).toFixed(3) + "%;height:" + hojd.toFixed(1) +
            "%;background:" + NIVAER[k.niva].farg + ";background-image:linear-gradient(to bottom," + NIVAER[k.niva].ljus + "," + NIVAER[k.niva].farg + ")" + (forbi ? ";opacity:.22" : "") + '"></div>';
     }
+    for (var yv = bas + ySteg; yv < topp - ySteg * 0.01; yv += ySteg) {
+      h += '<div class="ylinje" style="bottom:' + ((yv - bas) / range * 100).toFixed(2) + '%"><span>' + krText(yv, ySteg < 0.1 ? 2 : (ySteg < 1 ? (ySteg === 0.25 ? 2 : 1) : 0)) + '</span></div>';
+    }
+    h += '<div class="ylinje y0" style="bottom:0"><span>' + krText(bas, ySteg < 0.1 ? 2 : (ySteg < 1 ? (ySteg === 0.25 ? 2 : 1) : 0)) + '</span></div>';
     if (harImorgon) h += '<div class="dagsgrans" style="left:' + ((imorgon - t0) / span * 100).toFixed(3) + '%"></div>';
     if (nu >= t0 && nu < t1) h += '<div class="nu-linje" style="left:' + ((nu - t0) / span * 100).toFixed(3) + '%"><span>NU</span></div>';
     h += '<div class="val-stapel" id="valStapel"></div>';
@@ -613,7 +627,7 @@
     valdTid = t;
     var left = (k.start - diag.t0) / diag.span * 100;
     var w = (k.slut - k.start) / diag.span * 100;
-    var hojd = Math.max(1.5, (Math.max(k.pris, 0) - Math.max(diag.min, 0)) / diag.range * 100);
+    var hojd = Math.max(1.5, (erKr(k.pris) - diag.min) / diag.range * 100);
     if (st) {
       st.style.left = left.toFixed(3) + "%"; st.style.width = (w * 0.8).toFixed(3) + "%";
       st.style.height = hojd.toFixed(1) + "%"; st.style.display = "block";
