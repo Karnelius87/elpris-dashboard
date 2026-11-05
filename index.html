@@ -753,6 +753,23 @@
   setInterval(hallVaken, 60000);
   hallVaken();
 
+  // ---------- Ny version? ----------
+  var minVersion = null, senastVersionKoll = 0;
+  function textHash(t) { var h = 0; for (var i = 0; i < t.length; i++) { h = (h * 31 + t.charCodeAt(i)) | 0; } return h; }
+  function kollaVersion() {
+    senastVersionKoll = Date.now();
+    var x = new XMLHttpRequest();
+    x.open("GET", location.pathname + "?v=" + Date.now(), true);
+    x.onreadystatechange = function () {
+      if (x.readyState !== 4 || x.status !== 200) return;
+      var h = textHash(x.responseText);
+      if (minVersion === null) minVersion = h;
+      else if (h !== minVersion) location.reload();
+    };
+    try { x.send(); } catch (e) {}
+  }
+  kollaVersion();
+
   // ---------- Schema ----------
   var senasteDag = datumNyckel(new Date());
   function tick() {
@@ -765,8 +782,8 @@
     else if (!harIdag && sedan > 60000) hamtaAllt();
     else if (!harImorgon && d.getHours() >= 13 && sedan > 10 * 60000) hamtaAllt();
     else if (sedan > 6 * 3600000) hamtaAllt();
-    // Ladda om hela sidan en gång per natt för att få eventuella uppdateringar
-    if (Date.now() - sidanStartad > 20 * 3600000 && d.getHours() === 4) { location.reload(); return; }
+    // Ladda bara om sidan när det finns en ny version, och bara på natten (omladdning lämnar helskärmen)
+    if (d.getHours() >= 1 && d.getHours() < 5 && Date.now() - senastVersionKoll > 3600000) kollaVersion();
     rita();
   }
 
