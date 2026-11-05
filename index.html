@@ -169,6 +169,7 @@
 </head>
 <body>
 <div id="natt" style="display:none;position:fixed;left:0;top:0;right:0;bottom:0;z-index:50;background:#000;color:#333;text-align:center;font-size:40px;font-weight:200;padding-top:40vh"></div>
+<div id="hstips" style="display:none;position:fixed;left:50%;bottom:14px;margin-left:-150px;width:300px;z-index:40;text-align:center;font-size:15px;padding:8px 12px;border-radius:16px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff">Tryck var som helst för helskärm</div>
 <div class="wrap">
   <div class="top">
     <div class="dag" id="dag">&nbsp;</div>
@@ -703,6 +704,19 @@
   // Tryck på den svarta skärmen visar dashboarden i 2 minuter
   $("natt").addEventListener("click", function () { vakenTill = Date.now() + 120000; nattKoll(); }, false);
   setInterval(nattKoll, 15000);
+
+  // ---------- Helskärm i vanliga Chrome: ett tryck döljer flikar och adressfält ----------
+  function arHelskarm() { return !!(document.fullscreenElement || document.webkitFullscreenElement || document.webkitCurrentFullScreenElement); }
+  function helskarm() {
+    var el = document.documentElement;
+    var f = el.requestFullscreen || el.webkitRequestFullscreen || el.webkitRequestFullScreen;
+    if (f && !arHelskarm()) { try { var r = f.call(el); if (r && r["catch"]) r["catch"](function () {}); } catch (e) {} }
+  }
+  function visaTips() { var t = $("hstips"); if (t) t.style.display = arHelskarm() ? "none" : "block"; }
+  document.addEventListener("click", function () { helskarm(); setTimeout(visaTips, 500); }, false);
+  document.addEventListener("fullscreenchange", visaTips, false);
+  document.addEventListener("webkitfullscreenchange", visaTips, false);
+  setTimeout(visaTips, 1000);
 
   // ---------- Schema ----------
   var senasteDag = datumNyckel(new Date());
