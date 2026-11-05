@@ -35,11 +35,13 @@
   /* Glas */
   .glas {
     position: relative;
-    background-color: rgba(255,255,255,.08);
-    background-image: linear-gradient(160deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.04) 45%, rgba(255,255,255,.02) 100%);
+    background-color: rgba(255,255,255,.09);
+    background-image: linear-gradient(160deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.04) 45%, rgba(255,255,255,.02) 100%);
     border: 1px solid rgba(255,255,255,.18);
     border-radius: 26px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
+    -webkit-backdrop-filter: blur(28px) saturate(170%);
+    backdrop-filter: blur(28px) saturate(170%);
+    box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.25);
   }
 
   .top { display: table; width: 100%; margin-bottom: 14px; }
@@ -52,18 +54,28 @@
           background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); }
   .temp small { font-size: 13px; color: rgba(255,255,255,.6); font-weight: 600; letter-spacing: 1px; margin-right: 8px; vertical-align: 3px; }
 
+  /* Svar: kan vi tvätta nu? */
+  .hero-svar { padding-right: 26px; }
+  .svar { display: table; width: 100%; }
+  .svar > div { display: table-cell; vertical-align: middle; }
+  .svar-ikon { width: 1%; white-space: nowrap; font-size: 40px; padding-right: 22px; letter-spacing: 4px; }
+  .svar-titel { font-size: 54px; font-weight: 600; letter-spacing: -1px; line-height: 1.05; }
+  .svar-under { font-size: 21px; color: rgba(255,255,255,.8); margin-top: 8px; }
+  .svar .spara { margin-top: 12px; font-size: 18px; padding: 7px 14px; }
+
   /* Hjälte */
   .hero { display: table; width: 100%; margin-bottom: 16px; padding: 18px 26px 20px; }
   .hero > div { display: table-cell; vertical-align: middle; }
   .etikett { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: 1.6px; }
-  .hero-pris { font-size: 96px; font-weight: 200; line-height: 1; letter-spacing: -3px; white-space: nowrap; margin-top: 4px; }
+  .hero-pris { font-size: 72px; font-weight: 200; line-height: 1; letter-spacing: -3px; white-space: nowrap; margin-top: 4px; }
   .hero-pris span { font-size: 24px; font-weight: 400; letter-spacing: 0; color: rgba(255,255,255,.6); margin-left: 6px; }
   .niva-rad { margin-top: 10px; font-size: 20px; }
   .chip { display: inline-block; padding: 5px 14px 5px 12px; border-radius: 20px; font-size: 17px; font-weight: 600;
           background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18); vertical-align: middle; }
   .chip i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
   .niva-rad .tips { margin-left: 10px; color: rgba(255,255,255,.8); vertical-align: middle; }
-  .hero-hoger { width: 42%; padding-left: 26px; }
+  .hero-hoger { width: 34%; padding-left: 26px; border-left: 1px solid rgba(255,255,255,.14); }
+  .hero-hoger .tips { margin-top: 8px; font-size: 16px; color: rgba(255,255,255,.75); }
   .spann { position: relative; height: 10px; border-radius: 6px; margin: 16px 0 10px;
            background: linear-gradient(90deg, #34d17e, #a6dc4f, #ffd24a, #ff9a3c, #ff5468); }
   .spann .knopp { position: absolute; top: -7px; width: 24px; height: 24px; margin-left: -12px; border-radius: 50%;
@@ -105,7 +117,7 @@
   .ylinje { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed rgba(255,255,255,.12); }
   .ylinje.y0 { border-top: 0; }
   .ylinje span { position: absolute; right: 100%; margin-right: 10px; top: -9px; font-size: 13px; line-height: 18px; color: rgba(255,255,255,.5); white-space: nowrap; }
-  .nu-linje { position: absolute; top: -12px; bottom: -4px; width: 2px; background: #fff; margin-left: -1px; }
+  .nu-linje { position: absolute; top: -12px; bottom: -4px; width: 2px; background: #fff; margin-left: -1px; box-shadow: 0 0 10px rgba(255,255,255,.8); }
   .nu-linje span { position: absolute; top: -26px; left: -19px; width: 40px; text-align: center; font-size: 12px; font-weight: 700;
                    background: #fff; color: #0b0f24; border-radius: 10px; padding: 2px 0; letter-spacing: .5px; }
   .dagsgrans { position: absolute; top: -12px; bottom: -48px; width: 0; border-left: 1px dashed rgba(255,255,255,.25); }
@@ -116,10 +128,11 @@
   .forklaring { display: none; }
 
   .diagram, .axel { cursor: crosshair; -ms-touch-action: none; touch-action: none; }
-  .val-stapel { position: absolute; bottom: 0; background: #fff !important; border-radius: 4px 4px 1px 1px; display: none; }
+  .val-stapel { position: absolute; bottom: 0; background: #fff !important; border-radius: 4px 4px 1px 1px; box-shadow: 0 0 14px rgba(255,255,255,.9); display: none; }
   .bubbla { position: absolute; top: -18px; z-index: 5; padding: 10px 16px; border-radius: 18px; white-space: nowrap; display: none;
             background: rgba(30,30,60,.72); border: 1px solid rgba(255,255,255,.25);
-            background: rgba(28,30,62,.96); font-size: 15px; line-height: 1.35; color: rgba(255,255,255,.75); }
+            -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 0 10px 30px rgba(0,0,0,.45); font-size: 15px; line-height: 1.35; color: rgba(255,255,255,.75); }
   .bubbla b { font-size: 28px; font-weight: 300; color: #fff; letter-spacing: -.5px; }
   .bubbla .chip { font-size: 13px; padding: 2px 10px 2px 8px; margin-left: 8px; vertical-align: 6px; color: #fff; }
 
@@ -128,10 +141,24 @@
   .fot .h { text-align: right; white-space: nowrap; }
   .fel { background: rgba(255,70,90,.85); color: #fff; padding: 10px 16px; border-radius: 16px; margin-bottom: 12px; font-size: 18px; display: none; }
 
+  /* Liggande platta: allt ska rymmas utan att scrolla */
+  @media (max-height: 900px) and (min-width: 761px) {
+    .kort .spara { display: none; }
+    .top { margin-bottom: 8px; } .klocka { font-size: 44px; }
+    .hero { padding: 12px 22px 14px; margin-bottom: 12px; }
+    .nar { margin-top: 8px; } .kostnad { margin-top: 8px; padding-top: 8px; }
+    .kort { padding: 12px 18px 12px; } .kort-rad { margin-bottom: 12px; }
+    .diagram-ruta { padding: 12px 20px 6px; }
+  }
+
   /* Låg skärm (t.ex. 1024x600) */
   @media (max-height: 700px) and (min-width: 761px) {
     .wrap { padding: 8px 12px 4px; }
     .top { margin-bottom: 6px; } .dag { font-size: 20px; } .dag small { display: none; } .klocka { font-size: 34px; }
+    .svar-ikon { font-size: 30px; padding-right: 16px; } .svar-titel { font-size: 36px; } .svar-under { font-size: 16px; margin-top: 4px; } .svar .spara { margin-top: 6px; font-size: 14px; padding: 4px 10px; }
+    .hero-hoger .tips { font-size: 13px; margin-top: 4px; }
+    .hero-hoger .hero-pris { font-size: 46px; margin-top: 2px; } .hero-hoger .niva-rad { margin-top: 4px; }
+    .diagram-titel { display: none; } .diagram { margin-top: 24px; }
     .hero { padding: 8px 18px 10px; margin-bottom: 8px; border-radius: 20px; } .hero-pris { font-size: 56px; letter-spacing: -2px; }
     .niva-rad { margin-top: 4px; font-size: 16px; } .chip { font-size: 14px; padding: 3px 10px; }
     .spann { margin: 8px 0 6px; } .spann-text b { font-size: 15px; } .spot { display: none; }
@@ -155,6 +182,7 @@
     .kort-topp .status { display: none; }
     .kort { padding: 14px 16px 16px; }
     .kostnad .kr { font-size: 22px; }
+    .svar-titel { font-size: 38px; } .svar-ikon { font-size: 28px; padding-right: 14px; letter-spacing: 2px; } .svar-under { font-size: 18px; } .hero-hoger { width: 38%; } .hero-pris { font-size: 56px; }
   }
 
   /* Smal skärm */
@@ -163,7 +191,8 @@
     .kort-rad .kort { display: block; width: auto; margin: 0 0 12px; }
     .hero, .hero > div { display: block; width: auto; }
     .hero-hoger { padding-left: 0; margin-top: 10px; }
-    .hero-pris { font-size: 72px; }
+    .hero-pris { font-size: 64px; }
+    .hero-svar { padding-right: 0; } .hero-hoger { border-left: 0; } .svar-titel { font-size: 34px; }
   }
 </style>
 </head>
@@ -179,19 +208,13 @@
   <div class="fel" id="fel"></div>
 
   <div class="glas hero">
-    <div>
+    <div class="hero-svar"><div class="svar" id="svar"><div><div class="svar-titel">Hämtar elpris…</div></div></div></div>
+    <div class="hero-hoger">
       <div class="etikett" id="heroRubrik">Elpriset just nu</div>
       <div class="hero-pris"><span id="nuPris" style="font-size:inherit;color:#fff;margin:0;letter-spacing:inherit;font-weight:inherit">–</span><span>kr/kWh</span></div>
-      <div class="niva-rad"><span class="chip" id="nuNiva"><i style="background:#888"></i>Hämtar elpris…</span><span class="tips" id="nuTips"></span></div>
-    </div>
-    <div class="hero-hoger">
-      <div class="etikett" id="spannRubrik">Resten av dygnet</div>
-      <div class="spann" id="spann"><div class="knopp" id="knopp" style="display:none"></div></div>
-      <div class="spann-text">
-        <div id="lagst"></div>
-        <div class="h" id="hogst"></div>
-      </div>
-      <div class="spot" id="nuSpot"></div>
+      <div class="niva-rad"><span class="chip" id="nuNiva"><i style="background:#888"></i>Hämtar…</span></div>
+      <div class="tips" id="nuTips"></div>
+      <div style="display:none"><div id="spannRubrik"></div><div id="spann"><div id="knopp"></div></div><div id="lagst"></div><div id="hogst"></div><div id="nuSpot"></div></div>
     </div>
   </div>
 
@@ -249,7 +272,7 @@
   var MASKINER = [
     { id: "tvatt", namn: "Tvätt",  ikon: "\uD83D\uDC55", timmar: 2,   kwh: 1.0, tidigast: 7, senast: 22 },
     { id: "disk",  namn: "Disk",   ikon: "\uD83C\uDF7D\uFE0F", timmar: 2,   kwh: 1.0, tidigast: 6, senast: 24 },
-    { id: "tork",  namn: "Tork",   ikon: "\u2600\uFE0F", timmar: 1.5, kwh: 2.5, tidigast: 7, senast: 22 }
+    { id: "tork",  namn: "Tork",   ikon: "\uD83C\uDF00", timmar: 2  , kwh: 2.5, tidigast: 7, senast: 22 }
   ];
 
   var NIVAER = [
@@ -474,11 +497,11 @@
         var b2 = j; while (b2 < kv.length && kv[b2].niva > 2) b2++;
         tips = "Vänta gärna" + (b2 < kv.length ? ", billigare från kl " + klockText(kv[b2].start) : "");
       }
-      $("nuTips").innerHTML = tips;
+      var dyrtNu = k.niva > 2;
     }
 
     var harImorgonData = !!(data[datumNyckel(plusDagar(new Date(), 1))] || []).length;
-    var html = "";
+    var html = "", svar = null, res = [];
     for (var m = 0; m < MASKINER.length; m++) {
       var ma = MASKINER[m];
       var antal = Math.round(ma.timmar * 4);
@@ -510,6 +533,7 @@
           if (nuKr !== null && skillnad > 0.05) spara = '<div class="spara" style="background:' + farg + '">Du sparar ' + kostnadText(skillnad) + ' kr</div>';
         }
       }
+      res.push({ ma: ma, ja: rubrik === "Kör nu", b: b, nuKr: b ? (nuKr !== null ? nuKr : bastKr) : null, bastKr: b ? bastKr : null, skillnad: b && nuKr !== null ? skillnad : 0 });
       var chipFarg = rubrik === "Kör nu" ? NIVAER[0].farg : (nuIdx >= 0 ? NIVAER[Math.max(2, kv[nuIdx].niva)].farg : NIVAER[2].farg);
       var statusChip = '<span class="chip"><i style="background:' + chipFarg + ';box-shadow:0 0 8px ' + chipFarg + '"></i>' + (rubrik === "Kör nu" ? "Kör nu" : "Vänta") + "</span>";
       var narText = rubrik === "Kör nu" ? "Bäst just nu" : (b ? "Bäst " + dagOrd(b.start) : "Inga priser än");
@@ -522,8 +546,38 @@
               (kostnad ? '<div class="kostnad">' + kostnad + "</div>" : '<div class="kostnad"><div class="lbl">' + tid + "</div></div>") + spara + "</div>";
     }
     $("kortRad").innerHTML = html;
+    // Samlat svar för alla tre maskiner
+    var antalJa = 0, ikoner = "", vantar = [], spara = 0, forsta = null;
+    for (var r = 0; r < res.length; r++) {
+      var x = res[r];
+      if (x.ja) antalJa++;
+      else { vantar.push(x); if (x.skillnad > spara) spara = x.skillnad; if (x.b && (!forsta || x.b.start < forsta.b.start)) forsta = x; }
+      ikoner += '<span style="opacity:' + (x.ja ? 1 : .35) + '">' + x.ma.ikon + "</span>";
+    }
+    if (antalJa === res.length) {
+      svar = { ja: true, titel: "Ja, kör nu", ljus: NIVAER[0].ljus,
+               under: res[0].ma.namn + " " + kostnadText(res[0].nuKr) + " kr · " + res[1].ma.namn + " " + kostnadText(res[1].nuKr) + " kr · " + res[2].ma.namn + " " + kostnadText(res[2].nuKr) + " kr" };
+    } else if (antalJa === 0) {
+      ikoner = ikoner.replace(/opacity:\.35/g, "opacity:1");
+      svar = { titel: "Vänta med att köra", ljus: NIVAER[2].ljus,
+               under: forsta ? "Billigare " + dagOrd(forsta.b.start) + " från kl " + klockText(forsta.b.start) : "Morgondagens priser kommer runt kl 13",
+               spara: spara > 0.05 ? "Sparar upp till " + kostnadText(spara) + " kr" : "" };
+    } else {
+      var t = [];
+      for (r = 0; r < vantar.length; r++) if (vantar[r].b) t.push(vantar[r].ma.namn.toLowerCase() + " kl " + klockText(vantar[r].b.start));
+      svar = { ja: true, titel: "Ja, kör nu", ljus: NIVAER[0].ljus,
+               under: t.length ? "Men vänta med " + t.join(" och ") : "" };
+    }
+    $("svar").innerHTML = '<div class="svar-ikon">' + ikoner + '</div><div><div class="svar-titel" style="color:' + svar.ljus + '">' + svar.titel + '</div><div class="svar-under">' + svar.under + "</div>" +
+      (svar.spara ? '<span class="spara" style="background:' + NIVAER[3].farg + '">' + svar.spara + "</span>" : "") + "</div>";
+    if (nuIdx >= 0) {
+      // Samma besked överallt: lönar det sig inte att vänta, säg det
+      if (dyrtNu && svar && svar.ja) tips = "Dyrt, men det blir inte billigare under dagen";
+      $("nuTips").innerHTML = tips;
+    }
 
     ritaDiagram(kv, nu);
+    passaHojd();
 
     $("fotText").innerHTML = "Verkligt pris per kWh: spotpris + moms" + (SKATT ? " + energiskatt " + SKATT + " öre" : "") + " + E.ON nätavgift " + String(NAT).replace(".", ",") + " öre" + (SKATT ? "" : " (inkl. energiskatt)") + " + Tibber " + String(PASLAG).replace(".", ",") + " öre" +
       (ANDEL < 1 ? ", varav ni betalar " + ANDEL_TEXT : "") + "." +
@@ -538,6 +592,15 @@
     for (var j = i; j < i + antal && j < kv.length; j++) { s += kv[j].niva; n++; }
     return Math.round(s / n);
   }
+
+  // Krymp diagrammet så att allt får plats på skärmen utan att scrolla
+  function passaHojd() {
+    var d = $("diagram"); if (!d) return;
+    d.style.height = "";
+    var over = document.documentElement.scrollHeight - (window.innerHeight || 0);
+    if (over > 0) d.style.height = Math.max(70, d.offsetHeight - over - 2) + "px";
+  }
+  window.addEventListener("resize", function () { passaHojd(); }, false);
 
   function ritaDiagram(kv, nu) {
     var idag = new Date(); idag = new Date(idag.getFullYear(), idag.getMonth(), idag.getDate());
