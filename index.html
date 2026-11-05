@@ -27,7 +27,6 @@
       radial-gradient(ellipse at 92% 18%, rgba(0, 200, 210, .35) 0%, rgba(0, 200, 210, 0) 45%),
       radial-gradient(ellipse at 70% 100%, rgba(255, 64, 160, .30) 0%, rgba(255, 64, 160, 0) 50%),
       radial-gradient(ellipse at 0% 100%, rgba(40, 110, 255, .35) 0%, rgba(40, 110, 255, 0) 50%);
-    background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
   }
   .wrap { padding: 18px 20px 10px; }
@@ -36,13 +35,11 @@
   /* Glas */
   .glas {
     position: relative;
-    background-color: rgba(255,255,255,.09);
-    background-image: linear-gradient(160deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.04) 45%, rgba(255,255,255,.02) 100%);
+    background-color: rgba(255,255,255,.08);
+    background-image: linear-gradient(160deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.04) 45%, rgba(255,255,255,.02) 100%);
     border: 1px solid rgba(255,255,255,.18);
     border-radius: 26px;
-    -webkit-backdrop-filter: blur(28px) saturate(170%);
-    backdrop-filter: blur(28px) saturate(170%);
-    box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.25);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
   }
 
   .top { display: table; width: 100%; margin-bottom: 14px; }
@@ -108,7 +105,7 @@
   .ylinje { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed rgba(255,255,255,.12); }
   .ylinje.y0 { border-top: 0; }
   .ylinje span { position: absolute; right: 100%; margin-right: 10px; top: -9px; font-size: 13px; line-height: 18px; color: rgba(255,255,255,.5); white-space: nowrap; }
-  .nu-linje { position: absolute; top: -12px; bottom: -4px; width: 2px; background: #fff; margin-left: -1px; box-shadow: 0 0 10px rgba(255,255,255,.8); }
+  .nu-linje { position: absolute; top: -12px; bottom: -4px; width: 2px; background: #fff; margin-left: -1px; }
   .nu-linje span { position: absolute; top: -26px; left: -19px; width: 40px; text-align: center; font-size: 12px; font-weight: 700;
                    background: #fff; color: #0b0f24; border-radius: 10px; padding: 2px 0; letter-spacing: .5px; }
   .dagsgrans { position: absolute; top: -12px; bottom: -48px; width: 0; border-left: 1px dashed rgba(255,255,255,.25); }
@@ -119,11 +116,10 @@
   .forklaring { display: none; }
 
   .diagram, .axel { cursor: crosshair; -ms-touch-action: none; touch-action: none; }
-  .val-stapel { position: absolute; bottom: 0; background: #fff !important; border-radius: 4px 4px 1px 1px; box-shadow: 0 0 14px rgba(255,255,255,.9); display: none; }
+  .val-stapel { position: absolute; bottom: 0; background: #fff !important; border-radius: 4px 4px 1px 1px; display: none; }
   .bubbla { position: absolute; top: -18px; z-index: 5; padding: 10px 16px; border-radius: 18px; white-space: nowrap; display: none;
             background: rgba(30,30,60,.72); border: 1px solid rgba(255,255,255,.25);
-            -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%);
-            box-shadow: 0 10px 30px rgba(0,0,0,.45); font-size: 15px; line-height: 1.35; color: rgba(255,255,255,.75); }
+            background: rgba(28,30,62,.96); font-size: 15px; line-height: 1.35; color: rgba(255,255,255,.75); }
   .bubbla b { font-size: 28px; font-weight: 300; color: #fff; letter-spacing: -.5px; }
   .bubbla .chip { font-size: 13px; padding: 2px 10px 2px 8px; margin-left: 8px; vertical-align: 6px; color: #fff; }
 
@@ -715,8 +711,8 @@
     var aktiv = document.fullscreenElement || document.webkitFullscreenElement || document.webkitCurrentFullScreenElement || document.mozFullScreenElement;
     if (f && !aktiv) { try { var r = f.call(el); if (r && r["catch"]) r["catch"](function () {}); } catch (e) {} }
   }
-  document.addEventListener("click", helskarm, false);
-  document.addEventListener("touchend", helskarm, false);
+  var helskarmForsokt = false;
+  document.addEventListener("click", function () { if (!helskarmForsokt) { helskarmForsokt = true; helskarm(); } }, false);
 
   // ---------- Schema ----------
   var senasteDag = datumNyckel(new Date());
