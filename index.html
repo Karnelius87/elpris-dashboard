@@ -8,6 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700&display=swap" rel="stylesheet">
 <title>Elpriset idag</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b0f24">
+<link rel="icon" href="ikon-192.png">
+<link rel="apple-touch-icon" href="ikon-192.png">
 <style>
   * { box-sizing: border-box; -webkit-box-sizing: border-box; }
   html { background: #0b0f24; }
@@ -703,6 +707,16 @@
   // Tryck på den svarta skärmen visar dashboarden i 2 minuter
   $("natt").addEventListener("click", function () { vakenTill = Date.now() + 120000; nattKoll(); }, false);
   setInterval(nattKoll, 15000);
+
+  // ---------- Helskärm: första trycket på sidan döljer webbläsarens flikar och adressfält ----------
+  function helskarm() {
+    var el = document.documentElement;
+    var f = el.requestFullscreen || el.webkitRequestFullscreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+    var aktiv = document.fullscreenElement || document.webkitFullscreenElement || document.webkitCurrentFullScreenElement || document.mozFullScreenElement;
+    if (f && !aktiv) { try { var r = f.call(el); if (r && r["catch"]) r["catch"](function () {}); } catch (e) {} }
+  }
+  document.addEventListener("click", helskarm, false);
+  document.addEventListener("touchend", helskarm, false);
 
   // ---------- Schema ----------
   var senasteDag = datumNyckel(new Date());
