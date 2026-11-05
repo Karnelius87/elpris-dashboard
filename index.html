@@ -704,6 +704,9 @@
   // ---------- Nattläge 00–06: svart skärm och skärmlåset släpps så att plattan kan släcka skärmen (?natt=23-6, ?natt=av) ----------
   var NATT = /^(\d{1,2})-(\d{1,2})$/.exec(param.natt || "0-6");
   var vakenTill = 0, arNattNu = false;
+  // ?sov=ja släpper skärmlåset på natten så att plattan släcker skärmen helt (då måste någon trycka på strömknappen på morgonen).
+  // Standard: skärmen hålls igång men är svart, och dashboarden kommer tillbaka av sig själv kl 06.
+  var SOV_PA_NATTEN = param.sov === "ja";
   function nattKoll() {
     var el = $("natt");
     if (!NATT) { el.style.display = "none"; return; }
@@ -713,7 +716,7 @@
       el.innerHTML = $("klocka").innerHTML;
       el.style.display = "block";
       arNattNu = true;
-      if (vakeLas) { try { vakeLas.release(); } catch (e) {} vakeLas = null; }
+      if (SOV_PA_NATTEN && vakeLas) { try { vakeLas.release(); } catch (e) {} vakeLas = null; }
     } else { el.style.display = "none"; arNattNu = false; }
   }
   // Tryck på den svarta skärmen visar dashboarden i 2 minuter
@@ -737,7 +740,7 @@
   var vakeLas = null;
   function hallVaken() {
     try {
-      if (navigator.wakeLock && !vakeLas && !arNattNu && document.visibilityState === "visible") {
+      if (navigator.wakeLock && !vakeLas && !(arNattNu && SOV_PA_NATTEN) && document.visibilityState === "visible") {
         navigator.wakeLock.request("screen").then(function (l) {
           vakeLas = l;
           l.addEventListener("release", function () { vakeLas = null; });
