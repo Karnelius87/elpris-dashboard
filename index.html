@@ -661,15 +661,28 @@
   function hanteraTouch(e) {
     if (!diag || !e.touches || !e.touches.length) return;
     e.preventDefault();
+    senastTouch = Date.now();
     visaVal(xTillTid(e.touches[0].clientX), true);
   }
-  function hanteraMus(e) { if (diag) visaVal(xTillTid(e.clientX), true); }
+  var senastTouch = 0;
+  function gomVal() {
+    if (gomTimer) clearTimeout(gomTimer);
+    valdTid = null;
+    $("bubbla").style.display = "none";
+    var s2 = $("valStapel"); if (s2) s2.style.display = "none";
+  }
+  function slappt() { senastTouch = Date.now(); gomVal(); }
+  function hanteraMus(e) { if (diag && Date.now() - senastTouch > 1500) visaVal(xTillTid(e.clientX), true); }
   var ytor = [$("diagram"), $("axel")];
   for (var yi = 0; yi < ytor.length; yi++) {
     ytor[yi].addEventListener("touchstart", hanteraTouch, false);
     ytor[yi].addEventListener("touchmove", hanteraTouch, false);
+    ytor[yi].addEventListener("touchend", slappt, false);
+    ytor[yi].addEventListener("touchcancel", slappt, false);
+    ytor[yi].addEventListener("mouseleave", function () { if (Date.now() - senastTouch > 1500) gomVal(); }, false);
+    ytor[yi].addEventListener("mouseup", function () { if (Date.now() - senastTouch > 1500) gomVal(); }, false);
     ytor[yi].addEventListener("mousedown", hanteraMus, false);
-    ytor[yi].addEventListener("mousemove", function (e) { if (e.buttons === undefined || e.buttons || e.which) hanteraMus(e); }, false);
+    ytor[yi].addEventListener("mousemove", function (e) { if (e.buttons) hanteraMus(e); }, false);
   }
 
   // ---------- Inomhustemperatur (valfritt) ----------
