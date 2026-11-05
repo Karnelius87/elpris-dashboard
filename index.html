@@ -435,8 +435,6 @@
       // Fasta gränser
       if (p < 0.15) niva = 0;
       else if (p < 0.30 && niva > 1) niva = 1;
-      if (p > 2.5) niva = 4;
-      else if (p > 1.5 && niva < 3) niva = 3;
       kv[i].niva = niva;
     }
   }
