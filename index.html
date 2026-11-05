@@ -198,7 +198,7 @@
 
   <div class="glas diagram-ruta">
     <div class="diagram-titel">
-      <div><h2>Elpris per kvart <span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.5);margin-left:6px">kr/kWh</span></h2></div>
+      <div><h2>Elpris per kvart <span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.5);margin-left:6px">öre/kWh</span></h2></div>
       <div class="dra-tips">Dra med fingret för att se priset</div>
     </div>
     <div class="diagram-yta">
@@ -568,9 +568,9 @@
            "%;background:" + NIVAER[k.niva].farg + ";background-image:linear-gradient(to bottom," + NIVAER[k.niva].ljus + "," + NIVAER[k.niva].farg + ")" + (forbi ? ";opacity:.22" : "") + '"></div>';
     }
     for (var yv = bas + ySteg; yv < topp - ySteg * 0.01; yv += ySteg) {
-      h += '<div class="ylinje" style="bottom:' + ((yv - bas) / range * 100).toFixed(2) + '%"><span>' + krText(yv, ySteg < 0.1 ? 2 : (ySteg < 1 ? (ySteg === 0.25 ? 2 : 1) : 0)) + '</span></div>';
+      h += '<div class="ylinje" style="bottom:' + ((yv - bas) / range * 100).toFixed(2) + '%"><span>' + String(Math.round(yv * 100)) + '</span></div>';
     }
-    h += '<div class="ylinje y0" style="bottom:0"><span>' + krText(bas, ySteg < 0.1 ? 2 : (ySteg < 1 ? (ySteg === 0.25 ? 2 : 1) : 0)) + '</span></div>';
+    h += '<div class="ylinje y0" style="bottom:0"><span>' + String(Math.round(bas * 100)) + '</span></div>';
     if (harImorgon) h += '<div class="dagsgrans" style="left:' + ((imorgon - t0) / span * 100).toFixed(3) + '%"></div>';
     if (nu >= t0 && nu < t1) h += '<div class="nu-linje" style="left:' + ((nu - t0) / span * 100).toFixed(3) + '%"><span>NU</span></div>';
     h += '<div class="val-stapel" id="valStapel"></div>';
