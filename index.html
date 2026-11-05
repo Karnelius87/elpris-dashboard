@@ -1,14 +1,732 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Steg 1</title></head>
-<body style="font-family:Arial,sans-serif;font-size:24px;padding:20px">
-<h1>Steg 1: ren text</h1>
-<p>Om du ser detta fungerar webbläsaren.</p>
-<p>JavaScript: <b id="js">AV (JavaScript körs inte)</b></p>
-<p style="font-size:16px;color:#555">Webbläsare: <span id="ua"></span></p>
-<p><a href="test/steg2.html">Gå till steg 2 →</a></p>
-<p style="font-size:18px">Direkt till: <a href="test/steg3.html">steg 3</a> · <a href="test/steg4.html">steg 4</a> · <a href="test/steg5.html">steg 5</a> · <a href="app.html">hela dashboarden</a></p>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+<title>Elpriset idag</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b0f24">
+<link rel="icon" href="ikon-192.png">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<style>
+  * { box-sizing: border-box; -webkit-box-sizing: border-box; }
+  html { background: #0b0f24; }
+  html, body { margin: 0; padding: 0; min-height: 100%; }
+  body { min-height: 100vh; }
+  body {
+    color: #fff;
+    font-family: "Inter", -apple-system, "SF Pro Display", "Roboto", "Helvetica Neue", Arial, sans-serif;
+    font-size: 20px; line-height: 1.3;
+    background-color: #0b0f24;
+    background-image:
+      radial-gradient(ellipse at 12% 8%, rgba(124, 77, 255, .55) 0%, rgba(124, 77, 255, 0) 45%),
+      radial-gradient(ellipse at 92% 18%, rgba(0, 200, 210, .35) 0%, rgba(0, 200, 210, 0) 45%),
+      radial-gradient(ellipse at 70% 100%, rgba(255, 64, 160, .30) 0%, rgba(255, 64, 160, 0) 50%),
+      radial-gradient(ellipse at 0% 100%, rgba(40, 110, 255, .35) 0%, rgba(40, 110, 255, 0) 50%);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { padding: 18px 20px 10px; }
+  .dim { color: rgba(255,255,255,.55); }
+
+  /* Glas */
+  .glas {
+    position: relative;
+    background-color: rgba(255,255,255,.08);
+    background-image: linear-gradient(160deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.04) 45%, rgba(255,255,255,.02) 100%);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 26px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
+  }
+
+  .top { display: table; width: 100%; margin-bottom: 14px; }
+  .top > div { display: table-cell; vertical-align: middle; }
+  .dag { font-size: 26px; font-weight: 600; letter-spacing: -.2px; }
+  .dag small { display: block; font-size: 15px; font-weight: 500; color: rgba(255,255,255,.55); margin-top: 2px; letter-spacing: .3px; }
+  .klocka { text-align: right; font-size: 52px; font-weight: 200; white-space: nowrap; letter-spacing: -1px; }
+
+  .temp { display: inline-block; vertical-align: middle; margin-right: 22px; padding: 6px 16px; border-radius: 22px; font-size: 26px; font-weight: 300; letter-spacing: 0;
+          background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); }
+  .temp small { font-size: 13px; color: rgba(255,255,255,.6); font-weight: 600; letter-spacing: 1px; margin-right: 8px; vertical-align: 3px; }
+
+  /* Hjälte */
+  .hero { display: table; width: 100%; margin-bottom: 16px; padding: 18px 26px 20px; }
+  .hero > div { display: table-cell; vertical-align: middle; }
+  .etikett { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: 1.6px; }
+  .hero-pris { font-size: 96px; font-weight: 200; line-height: 1; letter-spacing: -3px; white-space: nowrap; margin-top: 4px; }
+  .hero-pris span { font-size: 24px; font-weight: 400; letter-spacing: 0; color: rgba(255,255,255,.6); margin-left: 6px; }
+  .niva-rad { margin-top: 10px; font-size: 20px; }
+  .chip { display: inline-block; padding: 5px 14px 5px 12px; border-radius: 20px; font-size: 17px; font-weight: 600;
+          background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18); vertical-align: middle; }
+  .chip i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
+  .niva-rad .tips { margin-left: 10px; color: rgba(255,255,255,.8); vertical-align: middle; }
+  .hero-hoger { width: 42%; padding-left: 26px; }
+  .spann { position: relative; height: 10px; border-radius: 6px; margin: 16px 0 10px;
+           background: linear-gradient(90deg, #34d17e, #a6dc4f, #ffd24a, #ff9a3c, #ff5468); }
+  .spann .knopp { position: absolute; top: -7px; width: 24px; height: 24px; margin-left: -12px; border-radius: 50%;
+                  background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.5); border: 3px solid rgba(255,255,255,.6); }
+  .spann-text { display: table; width: 100%; font-size: 15px; color: rgba(255,255,255,.65); }
+  .spann-text > div { display: table-cell; }
+  .spann-text b { color: #fff; font-size: 19px; font-weight: 600; display: block; }
+  .spann-text .h { text-align: right; }
+  .spot { font-size: 14px; color: rgba(255,255,255,.5); margin-top: 6px; }
+
+  /* Råd-kort */
+  .kort-rad { display: table; table-layout: fixed; border-spacing: 16px 0; margin: 0 -16px 16px; width: 100%; width: calc(100% + 32px); }
+  .kort { display: table-cell; padding: 16px 20px 18px; vertical-align: top; }
+  .kort-topp { display: table; width: 100%; }
+  .kort-topp > div { display: table-cell; vertical-align: middle; }
+  .ikon { width: 46px; height: 46px; border-radius: 50%; text-align: center; line-height: 46px; font-size: 24px;
+          background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.2); }
+  .kort-namn { font-size: 20px; font-weight: 600; padding-left: 12px; width: 100%; }
+  .kort-topp .status { white-space: nowrap; }
+  .kort-topp .status { text-align: right; }
+  .nar { margin-top: 14px; font-size: 14px; font-weight: 600; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: 1.2px; }
+  .tid { font-size: 40px; font-weight: 300; letter-spacing: -1px; line-height: 1.1; white-space: nowrap; }
+  .kostnad { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.12); display: table; width: 100%; }
+  .kostnad > div { display: table-cell; width: 50%; vertical-align: bottom; }
+  .kostnad .lbl { font-size: 13px; color: rgba(255,255,255,.55); white-space: nowrap; }
+  .kostnad .kr { font-size: 26px; font-weight: 600; white-space: nowrap; }
+  .kostnad .kr.gammal { color: rgba(255,255,255,.45); font-weight: 400; text-decoration: line-through; }
+  .spara { display: inline-block; margin-top: 12px; font-size: 15px; font-weight: 700; padding: 6px 12px; border-radius: 12px; color: #0b0f24; }
+
+  /* Diagram */
+  .diagram-ruta { padding: 16px 22px 10px; }
+  .diagram-titel { display: table; width: 100%; }
+  .diagram-titel > div { display: table-cell; vertical-align: bottom; }
+  .diagram-titel h2 { margin: 0; font-size: 20px; font-weight: 600; }
+  .dra-tips { font-size: 14px; color: rgba(255,255,255,.5); text-align: right; }
+  .diagram { position: relative; height: 190px; margin-top: 30px; border-bottom: 1px solid rgba(255,255,255,.18); }
+  .stapel { position: absolute; bottom: 0; border-radius: 4px 4px 1px 1px; }
+  .diagram-yta { position: relative; margin-left: 46px; }
+  .ylinje { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed rgba(255,255,255,.12); }
+  .ylinje.y0 { border-top: 0; }
+  .ylinje span { position: absolute; right: 100%; margin-right: 10px; top: -9px; font-size: 13px; line-height: 18px; color: rgba(255,255,255,.5); white-space: nowrap; }
+  .nu-linje { position: absolute; top: -12px; bottom: -4px; width: 2px; background: #fff; margin-left: -1px; }
+  .nu-linje span { position: absolute; top: -26px; left: -19px; width: 40px; text-align: center; font-size: 12px; font-weight: 700;
+                   background: #fff; color: #0b0f24; border-radius: 10px; padding: 2px 0; letter-spacing: .5px; }
+  .dagsgrans { position: absolute; top: -12px; bottom: -48px; width: 0; border-left: 1px dashed rgba(255,255,255,.25); }
+  .axel { position: relative; height: 26px; font-size: 13px; color: rgba(255,255,255,.5); }
+  .axel span { position: absolute; top: 6px; margin-left: -18px; width: 36px; text-align: center; }
+  .dagnamn { position: relative; height: 22px; font-size: 14px; font-weight: 600; color: rgba(255,255,255,.75); text-transform: uppercase; letter-spacing: 1px; }
+  .dagnamn span { position: absolute; top: 0; }
+  .forklaring { display: none; }
+
+  .diagram, .axel { cursor: crosshair; -ms-touch-action: none; touch-action: none; }
+  .val-stapel { position: absolute; bottom: 0; background: #fff !important; border-radius: 4px 4px 1px 1px; display: none; }
+  .bubbla { position: absolute; top: -18px; z-index: 5; padding: 10px 16px; border-radius: 18px; white-space: nowrap; display: none;
+            background: rgba(30,30,60,.72); border: 1px solid rgba(255,255,255,.25);
+            background: rgba(28,30,62,.96); font-size: 15px; line-height: 1.35; color: rgba(255,255,255,.75); }
+  .bubbla b { font-size: 28px; font-weight: 300; color: #fff; letter-spacing: -.5px; }
+  .bubbla .chip { font-size: 13px; padding: 2px 10px 2px 8px; margin-left: 8px; vertical-align: 6px; color: #fff; }
+
+  .fot { font-size: 12px; color: rgba(255,255,255,.4); margin-top: 10px; display: table; width: 100%; }
+  .fot > div { display: table-cell; }
+  .fot .h { text-align: right; white-space: nowrap; }
+  .fel { background: rgba(255,70,90,.85); color: #fff; padding: 10px 16px; border-radius: 16px; margin-bottom: 12px; font-size: 18px; display: none; }
+
+  /* Låg skärm (t.ex. 1024x600) */
+  @media (max-height: 700px) and (min-width: 761px) {
+    .wrap { padding: 8px 12px 4px; }
+    .top { margin-bottom: 6px; } .dag { font-size: 20px; } .dag small { display: none; } .klocka { font-size: 34px; }
+    .hero { padding: 8px 18px 10px; margin-bottom: 8px; border-radius: 20px; } .hero-pris { font-size: 56px; letter-spacing: -2px; }
+    .niva-rad { margin-top: 4px; font-size: 16px; } .chip { font-size: 14px; padding: 3px 10px; }
+    .spann { margin: 8px 0 6px; } .spann-text b { font-size: 15px; } .spot { display: none; }
+    .kort-rad { margin-bottom: 8px; border-spacing: 10px 0; margin-left: -10px; width: calc(100% + 20px); } .kort { padding: 10px 14px; border-radius: 20px; }
+    .ikon { width: 34px; height: 34px; line-height: 34px; font-size: 18px; } .kort-namn { font-size: 17px; }
+    .nar { margin-top: 6px; font-size: 12px; } .tid { font-size: 26px; }
+    .kostnad { margin-top: 6px; padding-top: 6px; } .kostnad .kr { font-size: 19px; }
+    .spara { margin-top: 6px; font-size: 13px; padding: 3px 9px; }
+    .diagram-ruta { padding: 8px 14px 4px; border-radius: 20px; } .diagram { height: 95px; margin-top: 26px; }
+    .fot { margin-top: 4px; font-size: 11px; }
+  }
+
+  /* Stående platta: större diagram */
+  @media (orientation: portrait) and (min-height: 1000px) {
+    .diagram { height: 440px; }
+    .tid { font-size: 32px; }
+  }
+
+  /* Smalare platta (stående) */
+  @media (max-width: 1000px) {
+    .kort-topp .status { display: none; }
+    .kort { padding: 14px 16px 16px; }
+    .kostnad .kr { font-size: 22px; }
+  }
+
+  /* Smal skärm */
+  @media (max-width: 760px) {
+    .kort-rad { display: block; margin: 0; width: auto; }
+    .kort-rad .kort { display: block; width: auto; margin: 0 0 12px; }
+    .hero, .hero > div { display: block; width: auto; }
+    .hero-hoger { padding-left: 0; margin-top: 10px; }
+    .hero-pris { font-size: 72px; }
+  }
+</style>
+</head>
+<body>
+<div id="natt" style="display:none;position:fixed;left:0;top:0;right:0;bottom:0;z-index:50;background:#000;color:#333;text-align:center;font-size:40px;font-weight:200;padding-top:40vh"></div>
+<div class="wrap">
+  <div class="top">
+    <div class="dag" id="dag">&nbsp;</div>
+    <div class="klocka"><span class="temp" id="temp" style="display:none"></span><span id="klocka">--:--</span></div>
+  </div>
+
+  <div class="fel" id="fel"></div>
+
+  <div class="glas hero">
+    <div>
+      <div class="etikett" id="heroRubrik">Elpriset just nu</div>
+      <div class="hero-pris"><span id="nuPris" style="font-size:inherit;color:#fff;margin:0;letter-spacing:inherit;font-weight:inherit">–</span><span>kr/kWh</span></div>
+      <div class="niva-rad"><span class="chip" id="nuNiva"><i style="background:#888"></i>Hämtar elpris…</span><span class="tips" id="nuTips"></span></div>
+    </div>
+    <div class="hero-hoger">
+      <div class="etikett" id="spannRubrik">Resten av dygnet</div>
+      <div class="spann" id="spann"><div class="knopp" id="knopp" style="display:none"></div></div>
+      <div class="spann-text">
+        <div id="lagst"></div>
+        <div class="h" id="hogst"></div>
+      </div>
+      <div class="spot" id="nuSpot"></div>
+    </div>
+  </div>
+
+  <div class="kort-rad" id="kortRad"></div>
+
+  <div class="glas diagram-ruta">
+    <div class="diagram-titel">
+      <div><h2>Elpris per kvart <span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.5);margin-left:6px">öre/kWh</span></h2></div>
+      <div class="dra-tips">Dra med fingret för att se priset</div>
+    </div>
+    <div class="diagram-yta">
+      <div style="position:relative">
+        <div class="diagram" id="diagram"></div>
+        <div class="bubbla" id="bubbla"></div>
+      </div>
+      <div class="axel" id="axel"></div>
+      <div class="dagnamn" id="dagnamn"></div>
+    </div>
+    <div class="forklaring" id="forklaring"></div>
+  </div>
+
+  <div class="fot" id="fot">
+    <div id="fotText">&nbsp;</div>
+    <div class="h" id="uppdaterad"></div>
+  </div>
+</div>
+
 <script>
-document.getElementById("js").innerHTML = "PÅ";
-document.getElementById("ua").innerHTML = navigator.userAgent;
+(function () {
+  "use strict";
+
+  // ---------- Inställningar (kan ändras med ?omrade=SE4&laddtimmar=5 i adressen) ----------
+  var param = {};
+  (location.search.replace(/^\?/, "").split("&")).forEach(function (p) {
+    var kv = p.split("=");
+    if (kv[0]) param[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || "");
+  });
+  function tal(namn, std, min, max) { var v = parseFloat(String(param[namn] || "").replace(",", ".")); return isNaN(v) ? std : Math.max(min, Math.min(max, v)); }
+  var OMRADE = /^SE[1-4]$/i.test(param.omrade || "") ? param.omrade.toUpperCase() : "SE4";
+  // Det man faktiskt betalar per kWh utöver spotpriset (öre, inkl. moms). Uppskattningar, kan ändras i adressen.
+  // E.ON-appen visar nätavgift 77,30 öre/kWh. Den tolkas som överföring + energiskatt inkl. moms,
+  // eftersom E.ON fakturerar energiskatten på nätfakturan. Sätt ?skatt=45 om skatten inte ingår.
+  var SKATT = tal("skatt", 0, 0, 100);     // energiskatt om den inte redan ingår i nätavgiften (2026: 36 öre + moms = 45)
+  var NAT = tal("nat", 77.3, 0, 200);      // E.ON nätavgift per kWh
+  var PASLAG = tal("paslag", 11.9, 0, 50); // Tibber: påslag 7,5 + rörliga avgifter 4,4 öre inkl. moms
+  var ANDEL = tal("andel", 100, 1, 100) / 100; // andel av totalkostnaden som visas (100 = hela priset)
+  var FAST = tal("fast", 0, 0, 5000);      // fasta avgifter kr/månad (nätabonnemang 25 A + Tibber 49 kr), visas bara i foten
+  var OMRADESNAMN = { SE1: "SE1 Luleå", SE2: "SE2 Sundsvall", SE3: "SE3 Stockholm", SE4: "SE4 Malmö" };
+
+  function totalKr(spot) { return spot * 1.25 + (SKATT + NAT + PASLAG) / 100; }
+  function erKr(spot) { return totalKr(spot) * ANDEL; }
+  var ANDEL_TEXT = Math.round(ANDEL * 100) + " %";
+
+  // timmar = hur länge den drar el, kwh = ungefärlig förbrukning per körning
+  var MASKINER = [
+    { id: "tvatt", namn: "Tvätt",  ikon: "\uD83D\uDC55", timmar: 2,   kwh: 1.0, tidigast: 7, senast: 22 },
+    { id: "disk",  namn: "Disk",   ikon: "\uD83C\uDF7D\uFE0F", timmar: 2,   kwh: 1.0, tidigast: 6, senast: 24 },
+    { id: "tork",  namn: "Tork",   ikon: "\u2600\uFE0F", timmar: 1.5, kwh: 2.5, tidigast: 7, senast: 22 }
+  ];
+
+  var NIVAER = [
+    { id: 0, namn: "Mycket billig", farg: "#34d17e", ljus: "#8ef0b8", text: "#0b0f24" },
+    { id: 1, namn: "Billig",        farg: "#a6dc4f", ljus: "#d6f59a", text: "#0b0f24" },
+    { id: 2, namn: "Normal",        farg: "#ffd24a", ljus: "#ffe9a3", text: "#0b0f24" },
+    { id: 3, namn: "Dyr",           farg: "#ff9a3c", ljus: "#ffc690", text: "#0b0f24" },
+    { id: 4, namn: "Mycket dyr",    farg: "#ff5468", ljus: "#ff9daa", text: "#0b0f24" }
+  ];
+
+  var VECKODAG = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
+  var MANAD = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
+
+  var data = {};          // "2026-11-05" -> [kvartar]
+  var senastHamtat = 0;
+  var sidanStartad = Date.now();
+
+  function $(id) { return document.getElementById(id); }
+  function tva(n) { return (n < 10 ? "0" : "") + n; }
+  function datumNyckel(d) { return d.getFullYear() + "-" + tva(d.getMonth() + 1) + "-" + tva(d.getDate()); }
+  function plusDagar(d, n) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + n, 12); return x; }
+
+  // Tolkar "2026-11-05T13:15:00+01:00" utan att lita på gamla webbläsares Date.parse
+  function tolkaTid(s) {
+    var m = /^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d)(?::(\d\d))?(?:\.\d+)?(Z|([+-])(\d\d):?(\d\d))?$/.exec(s);
+    if (!m) return NaN;
+    var utc = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +(m[6] || 0));
+    if (m[7] && m[7] !== "Z") {
+      var off = (+m[9] * 60 + +m[10]) * 60000;
+      utc -= (m[8] === "+" ? off : -off);
+    }
+    return utc;
+  }
+
+  function krText(kr, dec) {
+    if (dec === undefined) dec = 2;
+    return kr.toFixed(dec).replace(".", ",");
+  }
+  function kostnadText(kr) { return kr < 10 ? krText(kr, 2) : String(Math.round(kr)); }
+
+  function oreText(kr) {
+    var ore = kr * 100;
+    if (Math.abs(ore) < 10) return ore.toFixed(1).replace(".", ",");
+    return String(Math.round(ore));
+  }
+
+  function klockText(ms) {
+    var d = new Date(ms);
+    return tva(d.getHours()) + ":" + tva(d.getMinutes());
+  }
+
+  function dagOrd(ms) {
+    var idag = datumNyckel(new Date());
+    var k = datumNyckel(new Date(ms));
+    if (k === idag) return "idag";
+    if (k === datumNyckel(plusDagar(new Date(), 1))) return new Date(ms).getHours() < 6 ? "i natt" : "imorgon";
+    var d = new Date(ms);
+    return "på " + VECKODAG[d.getDay()];
+  }
+
+  // ---------- Hämta data ----------
+  function hamtaJson(url, ok, fel) {
+    var x = new XMLHttpRequest();
+    x.open("GET", url, true);
+    x.timeout = 15000;
+    x.onreadystatechange = function () {
+      if (x.readyState !== 4) return;
+      if (x.status === 200) {
+        try { ok(JSON.parse(x.responseText)); } catch (e) { fel(x.status); }
+      } else { fel(x.status); }
+    };
+    try { x.send(); } catch (e) { fel(0); }
+  }
+
+  function hamtaDag(d, klar) {
+    var nyckel = datumNyckel(d);
+    var delar = nyckel.split("-");
+    var fil = delar[0] + "/" + delar[1] + "-" + delar[2] + "_" + OMRADE + ".json";
+    var direkt = "https://www.elprisetjustnu.se/api/v1/prices/" + fil;
+    var reserv = "api/pris?fil=" + encodeURIComponent(fil);
+    function tagEmot(lista) {
+      var kv = [];
+      for (var i = 0; i < lista.length; i++) {
+        var s = tolkaTid(lista[i].time_start), e = tolkaTid(lista[i].time_end);
+        if (!isNaN(s) && !isNaN(e)) kv.push({ start: s, slut: e, pris: lista[i].SEK_per_kWh });
+      }
+      kv.sort(function (a, b) { return a.start - b.start; });
+      data[nyckel] = kv;
+      klar(true);
+    }
+    hamtaJson(direkt, tagEmot, function (status) {
+      if (status === 404) { klar(false, 404); return; }
+      hamtaJson(reserv, tagEmot, function (st2) { klar(false, st2 || status); });
+    });
+  }
+
+  function sparaCache() {
+    try { localStorage.setItem("elpris-" + OMRADE, JSON.stringify({ t: Date.now(), data: data })); } catch (e) {}
+  }
+  function lasCache() {
+    try {
+      var c = JSON.parse(localStorage.getItem("elpris-" + OMRADE));
+      if (c && c.data) { data = c.data; senastHamtat = c.t || 0; }
+    } catch (e) {}
+  }
+
+  var hamtar = false;
+  function hamtaAllt() {
+    if (hamtar) return;
+    hamtar = true;
+    var idag = new Date();
+    var kvar = 2, felIdag = false;
+    hamtaDag(idag, function (ok, status) {
+      if (!ok) felIdag = true;
+      if (--kvar === 0) klart();
+    });
+    hamtaDag(plusDagar(idag, 1), function () {
+      if (--kvar === 0) klart();
+    });
+    function klart() {
+      hamtar = false;
+      if (!felIdag) { senastHamtat = Date.now(); sparaCache(); }
+      visaFel(felIdag ? "Kunde inte hämta elpriset just nu. Försöker igen om en stund." : "");
+      // Ta bort gamla dagar
+      var behall = {}; behall[datumNyckel(new Date())] = 1; behall[datumNyckel(plusDagar(new Date(), 1))] = 1;
+      for (var k in data) if (!behall[k]) delete data[k];
+      rita();
+    }
+  }
+
+  function visaFel(t) {
+    var el = $("fel");
+    el.style.display = t ? "block" : "none";
+    el.innerHTML = t;
+  }
+
+  // ---------- Beräkningar ----------
+  function allaKvartar() {
+    var ut = [];
+    var a = data[datumNyckel(new Date())] || [];
+    var b = data[datumNyckel(plusDagar(new Date(), 1))] || [];
+    return ut.concat(a, b);
+  }
+
+  // Prisnivå: jämför med snittet 12 timmar bakåt och framåt, plus fasta gränser
+  function satNivaer(kv) {
+    for (var i = 0; i < kv.length; i++) {
+      var summa = 0, n = 0;
+      for (var j = 0; j < kv.length; j++) {
+        if (Math.abs(kv[j].start - kv[i].start) <= 12 * 3600000) { summa += kv[j].pris; n++; }
+      }
+      var snitt = summa / n;
+      var p = kv[i].pris, niva;
+      var rel = snitt > 0.05 ? p / snitt : 1 + (p - snitt) * 5;
+      if (rel < 0.7) niva = 0;
+      else if (rel < 0.9) niva = 1;
+      else if (rel <= 1.12) niva = 2;
+      else if (rel <= 1.35) niva = 3;
+      else niva = 4;
+      // Fasta gränser
+      if (p < 0.15) niva = 0;
+      else if (p < 0.30 && niva > 1) niva = 1;
+      if (p > 2.5) niva = 4;
+      else if (p > 1.5 && niva < 3) niva = 3;
+      kv[i].niva = niva;
+    }
+  }
+
+  function timmeIDygnet(ms) { var d = new Date(ms); return d.getHours() + d.getMinutes() / 60; }
+
+  // Billigaste sammanhängande fönster från och med nu
+  function bastaFonster(kv, nu, maskin) {
+    var antal = Math.round(maskin.timmar * 4);
+    var start = 0;
+    while (start < kv.length && kv[start].slut <= nu) start++;
+    var bast = null;
+    for (var i = start; i + antal <= kv.length; i++) {
+      var forst = kv[i], sist = kv[i + antal - 1];
+      if (sist.slut - forst.start !== antal * 900000) continue; // hål i datan
+      var h0 = timmeIDygnet(forst.start);
+      var h1 = h0 + maskin.timmar;
+      if (h0 < maskin.tidigast || h1 > maskin.senast + 0.001) continue;
+      var summa = 0;
+      for (var j = i; j < i + antal; j++) summa += kv[j].pris;
+      var snitt = summa / antal;
+      if (!bast || snitt < bast.snitt - 0.0001) bast = { i: i, start: forst.start, slut: sist.slut, snitt: snitt };
+    }
+    return bast;
+  }
+
+  function snittFranNu(kv, idx, antal) {
+    var s = 0, n = 0;
+    for (var j = idx; j < idx + antal && j < kv.length; j++) { s += kv[j].pris; n++; }
+    return n ? s / n : null;
+  }
+
+  // ---------- Ritning ----------
+  function rita() {
+    var nu = Date.now();
+    var d = new Date();
+    $("klocka").innerHTML = tva(d.getHours()) + ":" + tva(d.getMinutes());
+    var dagText = VECKODAG[d.getDay()] + " " + d.getDate() + " " + MANAD[d.getMonth()];
+    $("dag").innerHTML = dagText.charAt(0).toUpperCase() + dagText.slice(1) + "<small>Elområde " + OMRADESNAMN[OMRADE] + "</small>";
+
+    var kv = allaKvartar();
+    if (!kv.length) return;
+    satNivaer(kv);
+
+    var nuIdx = -1;
+    for (var i = 0; i < kv.length; i++) if (kv[i].start <= nu && nu < kv[i].slut) { nuIdx = i; break; }
+    if (nuIdx >= 0) {
+      var k = kv[nuIdx], niv = NIVAER[k.niva];
+      $("nuPris").innerHTML = krText(erKr(k.pris));
+      $("nuSpot").innerHTML = ANDEL < 1 ? "Hela priset " + krText(totalKr(k.pris)) + " kr/kWh, ni betalar " + ANDEL_TEXT : "Varav spotpris " + krText(k.pris * 1.25) + " kr inkl. moms";
+      $("nuNiva").innerHTML = '<i style="background:' + niv.farg + ';box-shadow:0 0 8px ' + niv.farg + '"></i>' + niv.namn;
+      var j = nuIdx + 1;
+      while (j < kv.length && kv[j].niva === k.niva) j++;
+      var tips;
+      if (k.niva <= 1) tips = "Bra läge att använda el" + (j < kv.length ? " till kl " + klockText(kv[j].start) : "");
+      else if (k.niva === 2) tips = "Helt okej att använda el nu";
+      else {
+        var b2 = j; while (b2 < kv.length && kv[b2].niva > 2) b2++;
+        tips = "Vänta gärna" + (b2 < kv.length ? ", billigare från kl " + klockText(kv[b2].start) : "");
+      }
+      $("nuTips").innerHTML = tips;
+    }
+
+    var harImorgonData = !!(data[datumNyckel(plusDagar(new Date(), 1))] || []).length;
+    var html = "";
+    for (var m = 0; m < MASKINER.length; m++) {
+      var ma = MASKINER[m];
+      var antal = Math.round(ma.timmar * 4);
+      var b = bastaFonster(kv, nu, ma);
+      var nuSnitt = nuIdx >= 0 ? snittFranNu(kv, nuIdx, antal) : null;
+      var fullNu = nuIdx >= 0 && nuIdx + antal <= kv.length;
+      var startarNu = false, rubrik, tid = "", farg = "rgba(255,255,255,.4)", kostnad = "", spara = "";
+      if (!b) {
+        rubrik = "Vänta till imorgon";
+        tid = "Nya priser kommer runt kl 13";
+      } else {
+        startarNu = b.start <= nu + 15 * 60000 && nuIdx >= 0;
+        farg = NIVAER[snittNiva(kv, b.i, antal)].farg;
+        var bastKr = erKr(b.snitt) * ma.kwh;
+        var nuKr = fullNu ? erKr(nuSnitt) * ma.kwh : null;
+        var skillnad = nuKr !== null ? nuKr - bastKr : 0;
+        var liten = skillnad < Math.max(0.3 * ANDEL, bastKr * 0.08);
+        if (startarNu || (fullNu && liten && nu > 0)) {
+          rubrik = "Kör nu";
+          tid = startarNu ? "Billigast just nu" : "Nästan lika billigt som bästa tiden";
+          farg = NIVAER[snittNiva(kv, nuIdx, antal)].farg;
+          kostnad = '<div><div class="lbl">Kostar nu</div><div class="kr">' + kostnadText(nuKr !== null ? nuKr : bastKr) + ' kr</div></div>';
+          if (!startarNu) kostnad += '<div><div class="lbl">Kl ' + klockText(b.start) + '</div><div class="kr">' + kostnadText(bastKr) + ' kr</div></div>';
+        } else {
+          rubrik = "Kör " + dagOrd(b.start);
+          tid = "kl " + klockText(b.start) + "–" + klockText(b.slut);
+          kostnad = (nuKr !== null ? '<div><div class="lbl">Om du kör nu</div><div class="kr gammal">' + kostnadText(nuKr) + ' kr</div></div>' : "") +
+                    '<div><div class="lbl">Kl ' + klockText(b.start) + '</div><div class="kr" style="color:' + NIVAER[0].ljus + '">' + kostnadText(bastKr) + ' kr</div></div>';
+          if (nuKr !== null && skillnad > 0.05) spara = '<div class="spara" style="background:' + farg + '">Du sparar ' + kostnadText(skillnad) + ' kr</div>';
+        }
+      }
+      var chipFarg = rubrik === "Kör nu" ? NIVAER[0].farg : (nuIdx >= 0 ? NIVAER[Math.max(2, kv[nuIdx].niva)].farg : NIVAER[2].farg);
+      var statusChip = '<span class="chip"><i style="background:' + chipFarg + ';box-shadow:0 0 8px ' + chipFarg + '"></i>' + (rubrik === "Kör nu" ? "Kör nu" : "Vänta") + "</span>";
+      var narText = rubrik === "Kör nu" ? "Bäst just nu" : (b ? "Bäst " + dagOrd(b.start) : "Inga priser än");
+      var tidText = b ? klockText(b.start) + "–" + klockText(b.slut) : "–";
+      if (rubrik === "Kör nu" && !startarNu) narText = "Nu går bra";
+      if (rubrik === "Kör nu") tidText = "Nu";
+      html += '<div class="kort glas"><div class="kort-topp"><div style="width:48px;min-width:48px"><div class="ikon">' + ma.ikon + "</div></div>" +
+              '<div class="kort-namn">' + ma.namn + '</div><div class="status">' + statusChip + "</div></div>" +
+              '<div class="nar">' + narText + '</div><div class="tid">' + tidText + "</div>" +
+              (kostnad ? '<div class="kostnad">' + kostnad + "</div>" : '<div class="kostnad"><div class="lbl">' + tid + "</div></div>") + spara + "</div>";
+    }
+    $("kortRad").innerHTML = html;
+
+    ritaDiagram(kv, nu);
+
+    $("fotText").innerHTML = "Verkligt pris per kWh: spotpris + moms" + (SKATT ? " + energiskatt " + SKATT + " öre" : "") + " + E.ON nätavgift " + String(NAT).replace(".", ",") + " öre" + (SKATT ? "" : " (inkl. energiskatt)") + " + Tibber " + String(PASLAG).replace(".", ",") + " öre" +
+      (ANDEL < 1 ? ", varav ni betalar " + ANDEL_TEXT : "") + "." +
+      (FAST ? " Fasta avgifter ca " + Math.round(FAST) + " kr/mån" + (ANDEL < 1 ? " (er del " + Math.round(FAST * ANDEL) + " kr)" : "") + "." : "") +
+      " Spotpris: elprisetjustnu.se";
+    var sh = senastHamtat ? new Date(senastHamtat) : null;
+    $("uppdaterad").innerHTML = sh ? "Hämtat " + tva(sh.getHours()) + ":" + tva(sh.getMinutes()) : "";
+  }
+
+  function snittNiva(kv, i, antal) {
+    var s = 0, n = 0;
+    for (var j = i; j < i + antal && j < kv.length; j++) { s += kv[j].niva; n++; }
+    return Math.round(s / n);
+  }
+
+  function ritaDiagram(kv, nu) {
+    var idag = new Date(); idag = new Date(idag.getFullYear(), idag.getMonth(), idag.getDate());
+    var t0 = idag.getTime();
+    var imorgon = new Date(idag.getFullYear(), idag.getMonth(), idag.getDate() + 1).getTime();
+    var t1 = new Date(idag.getFullYear(), idag.getMonth(), idag.getDate() + 2).getTime();
+    var harImorgon = !!(data[datumNyckel(plusDagar(idag, 1))] || []).length;
+    if (!harImorgon) t1 = imorgon;
+    var span = t1 - t0;
+
+    // Y-skala i det pris som visas (kr/kWh), med "snygga" steg
+    var lo = Infinity, hi = -Infinity;
+    for (var i = 0; i < kv.length; i++) { var v = erKr(kv[i].pris); if (v < lo) lo = v; if (v > hi) hi = v; }
+    var stegLista = [0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 5], ySteg = 1;
+    for (i = 0; i < stegLista.length; i++) { if ((hi - lo) / stegLista[i] <= 4) { ySteg = stegLista[i]; break; } }
+    var bas = Math.floor(lo / ySteg) * ySteg; if (bas > 0 && lo - bas < ySteg * 0.3) bas -= ySteg; if (bas < 0 && lo >= 0) bas = 0;
+    var topp = Math.ceil(hi / ySteg) * ySteg; if (topp - hi < ySteg * 0.15) topp += ySteg;
+    var min = bas, range = topp - bas;
+
+    var h = "";
+    for (i = 0; i < kv.length; i++) {
+      var k = kv[i];
+      if (k.start < t0 || k.start >= t1) continue;
+      var left = (k.start - t0) / span * 100;
+      var w = (k.slut - k.start) / span * 100;
+      var hojd = Math.max(1.5, (erKr(k.pris) - min) / range * 100);
+      var forbi = k.slut <= nu;
+      h += '<div class="stapel" style="left:' + left.toFixed(3) + "%;width:" + (w * 0.8).toFixed(3) + "%;height:" + hojd.toFixed(1) +
+           "%;background:" + NIVAER[k.niva].farg + ";background-image:linear-gradient(to bottom," + NIVAER[k.niva].ljus + "," + NIVAER[k.niva].farg + ")" + (forbi ? ";opacity:.22" : "") + '"></div>';
+    }
+    for (var yv = bas + ySteg; yv < topp - ySteg * 0.01; yv += ySteg) {
+      h += '<div class="ylinje" style="bottom:' + ((yv - bas) / range * 100).toFixed(2) + '%"><span>' + String(Math.round(yv * 100)) + '</span></div>';
+    }
+    h += '<div class="ylinje y0" style="bottom:0"><span>' + String(Math.round(bas * 100)) + '</span></div>';
+    if (harImorgon) h += '<div class="dagsgrans" style="left:' + ((imorgon - t0) / span * 100).toFixed(3) + '%"></div>';
+    if (nu >= t0 && nu < t1) h += '<div class="nu-linje" style="left:' + ((nu - t0) / span * 100).toFixed(3) + '%"><span>NU</span></div>';
+    h += '<div class="val-stapel" id="valStapel"></div>';
+    $("diagram").innerHTML = h;
+    diag = { kv: kv, t0: t0, span: span, min: min, range: range };
+    if (valdTid !== null) visaVal(valdTid, false);
+
+    // Tidsaxel
+    var steg = harImorgon ? 3 : 2;
+    var a = "";
+    for (var t = t0; t <= t1; t += steg * 3600000) {
+      var tim = new Date(t).getHours();
+      if (t === t1) continue;
+      a += '<span style="left:' + ((t - t0) / span * 100).toFixed(3) + '%">' + tva(tim) + "</span>";
+    }
+    $("axel").innerHTML = a;
+    var dn = '<span style="left:0">Idag</span>';
+    if (harImorgon) dn += '<span style="left:' + ((imorgon - t0) / span * 100 + 1).toFixed(3) + '%">Imorgon</span>';
+    else dn += '<span style="right:0;color:#93a1b5;font-weight:normal">Morgondagens priser kommer runt kl 13</span>';
+    $("dagnamn").innerHTML = dn;
+
+    var f = "";
+    for (i = 0; i < NIVAER.length; i++) f += '<i style="background:' + NIVAER[i].farg + '"></i>' + NIVAER[i].namn;
+    $("forklaring").innerHTML = f;
+
+    // Lägst och högst från och med nu
+    var lo = null, hi = null;
+    for (i = 0; i < kv.length; i++) {
+      if (kv[i].slut <= nu) continue;
+      if (!lo || kv[i].pris < lo.pris) lo = kv[i];
+      if (!hi || kv[i].pris > hi.pris) hi = kv[i];
+    }
+    if (lo) {
+      $("lagst").innerHTML = "Lägst " + dagOrd(lo.start) + " " + klockText(lo.start) + "<b>" + krText(erKr(lo.pris)) + " kr</b>";
+      $("hogst").innerHTML = "Högst " + dagOrd(hi.start) + " " + klockText(hi.start) + "<b>" + krText(erKr(hi.pris)) + " kr</b>";
+      var nuK = null; for (i = 0; i < kv.length; i++) if (kv[i].start <= nu && nu < kv[i].slut) nuK = kv[i];
+      if (nuK && hi.pris > lo.pris) {
+        var f2 = (nuK.pris - lo.pris) / (hi.pris - lo.pris); if (f2 < 0) f2 = 0; if (f2 > 1) f2 = 1;
+        $("knopp").style.left = (f2 * 100).toFixed(1) + "%"; $("knopp").style.display = "block";
+      }
+      $("spannRubrik").innerHTML = harImorgon ? "Nu till och med imorgon" : "Resten av dagen";
+    }
+  }
+
+  // ---------- Dra med fingret i diagrammet ----------
+  var diag = null, valdTid = null, gomTimer = null;
+
+  function visaVal(t, fran) {
+    if (!diag) return;
+    var kv = diag.kv, k = null, idx = -1;
+    for (var i = 0; i < kv.length; i++) if (kv[i].start <= t && t < kv[i].slut) { k = kv[i]; idx = i; break; }
+    var bub = $("bubbla"), st = $("valStapel");
+    if (!k) { bub.style.display = "none"; if (st) st.style.display = "none"; return; }
+    valdTid = t;
+    var left = (k.start - diag.t0) / diag.span * 100;
+    var w = (k.slut - k.start) / diag.span * 100;
+    var hojd = Math.max(1.5, (erKr(k.pris) - diag.min) / diag.range * 100);
+    if (st) {
+      st.style.left = left.toFixed(3) + "%"; st.style.width = (w * 0.8).toFixed(3) + "%";
+      st.style.height = hojd.toFixed(1) + "%"; st.style.display = "block";
+    }
+    var niv = NIVAER[k.niva];
+    var tvatt = MASKINER[0], antal = Math.round(tvatt.timmar * 4), extra = "";
+    if (idx + antal <= kv.length) extra = '<br><span>En tvätt som startar då: ca ' + kostnadText(erKr(snittFranNu(kv, idx, antal)) * tvatt.kwh) + " kr</span>";
+    bub.innerHTML = '<span>' + (dagOrd(k.start) === "idag" ? "Idag" : dagOrd(k.start).charAt(0).toUpperCase() + dagOrd(k.start).slice(1)) +
+      " kl " + klockText(k.start) + "–" + klockText(k.slut) + "</span><br><b>" + krText(erKr(k.pris)) + " kr/kWh</b>" +
+      '<span class="chip"><i style="background:' + niv.farg + ';box-shadow:0 0 8px ' + niv.farg + '"></i>' + niv.namn + "</span>" + extra;
+    bub.style.display = "block";
+    // Placera bubblan bredvid stapeln utan att den hamnar utanför
+    var bredd = $("diagram").offsetWidth, bb = bub.offsetWidth;
+    var x = (left + w / 2) / 100 * bredd;
+    var pos = x + 16;
+    if (pos + bb > bredd) pos = x - bb - 16;
+    if (pos < 0) pos = 0;
+    bub.style.left = pos + "px";
+    if (gomTimer) clearTimeout(gomTimer);
+    gomTimer = setTimeout(function () { valdTid = null; bub.style.display = "none"; var s2 = $("valStapel"); if (s2) s2.style.display = "none"; }, 6000);
+  }
+
+  function xTillTid(clientX) {
+    var el = $("diagram"), r = el.getBoundingClientRect();
+    var f = (clientX - r.left) / r.width;
+    if (f < 0) f = 0; if (f > 0.9999) f = 0.9999;
+    return diag.t0 + f * diag.span;
+  }
+
+  function hanteraTouch(e) {
+    if (!diag || !e.touches || !e.touches.length) return;
+    e.preventDefault();
+    visaVal(xTillTid(e.touches[0].clientX), true);
+  }
+  function hanteraMus(e) { if (diag) visaVal(xTillTid(e.clientX), true); }
+  var ytor = [$("diagram"), $("axel")];
+  for (var yi = 0; yi < ytor.length; yi++) {
+    ytor[yi].addEventListener("touchstart", hanteraTouch, false);
+    ytor[yi].addEventListener("touchmove", hanteraTouch, false);
+    ytor[yi].addEventListener("mousedown", hanteraMus, false);
+    ytor[yi].addEventListener("mousemove", function (e) { if (e.buttons === undefined || e.buttons || e.which) hanteraMus(e); }, false);
+  }
+
+  // ---------- Inomhustemperatur (valfritt) ----------
+  // Sätt ?tempurl=<adress> till en JSON-källa, t.ex. {"inne": 21.5} från värmepumpsstyrningen. Utan den visas ingen ruta.
+  var TEMPURL = param.tempurl || "";
+  function hamtaTemp() {
+    if (!TEMPURL) return;
+    hamtaJson(TEMPURL, function (j) {
+      var t = j && (j.inne !== undefined ? j.inne : j.temperature);
+      if (typeof t === "number") {
+        $("temp").innerHTML = "<small>INNE</small>" + t.toFixed(1).replace(".", ",") + "°";
+        $("temp").style.display = "inline-block";
+      }
+    }, function () { $("temp").style.display = "none"; });
+  }
+  hamtaTemp();
+  setInterval(hamtaTemp, 120000);
+
+  // ---------- Nattläge: svart skärm mellan t.ex. 23 och 06 (?natt=23-6, ?natt=av stänger av) ----------
+  var NATT = /^(\d{1,2})-(\d{1,2})$/.exec(param.natt || "23-6");
+  var vakenTill = 0;
+  function nattKoll() {
+    var el = $("natt");
+    if (!NATT) { el.style.display = "none"; return; }
+    var h = new Date().getHours(), fran = +NATT[1], till = +NATT[2];
+    var arNatt = fran > till ? (h >= fran || h < till) : (h >= fran && h < till);
+    if (arNatt && Date.now() > vakenTill) {
+      el.innerHTML = $("klocka").innerHTML;
+      el.style.display = "block";
+    } else el.style.display = "none";
+  }
+  // Tryck på den svarta skärmen visar dashboarden i 2 minuter
+  $("natt").addEventListener("click", function () { vakenTill = Date.now() + 120000; nattKoll(); }, false);
+  setInterval(nattKoll, 15000);
+
+  // ---------- Schema ----------
+  var senasteDag = datumNyckel(new Date());
+  function tick() {
+    var d = new Date();
+    var nyckel = datumNyckel(d);
+    var harIdag = !!(data[nyckel] || []).length;
+    var harImorgon = !!(data[datumNyckel(plusDagar(d, 1))] || []).length;
+    var sedan = Date.now() - senastHamtat;
+    if (nyckel !== senasteDag) { senasteDag = nyckel; hamtaAllt(); }
+    else if (!harIdag && sedan > 60000) hamtaAllt();
+    else if (!harImorgon && d.getHours() >= 13 && sedan > 10 * 60000) hamtaAllt();
+    else if (sedan > 6 * 3600000) hamtaAllt();
+    // Ladda om hela sidan en gång per natt för att få eventuella uppdateringar
+    if (Date.now() - sidanStartad > 20 * 3600000 && d.getHours() === 4) { location.reload(); return; }
+    rita();
+  }
+
+  lasCache();
+  rita();
+  nattKoll();
+  hamtaAllt();
+  setInterval(tick, 30000);
+})();
 </script>
-</body></html>
+</body>
+</html>

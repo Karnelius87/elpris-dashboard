@@ -1,10 +1,9 @@
 {
   "name": "Elpriset idag",
   "short_name": "Elpris",
-  "start_url": "./app.html",
+  "start_url": "./",
   "scope": "./",
-  "display": "fullscreen",
-  "orientation": "any",
+  "display": "standalone",
   "background_color": "#0b0f24",
   "theme_color": "#0b0f24",
   "icons": [
