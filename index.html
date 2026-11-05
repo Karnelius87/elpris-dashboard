@@ -120,7 +120,7 @@
   .nu-linje { position: absolute; top: -12px; bottom: -4px; width: 2px; background: #fff; margin-left: -1px; box-shadow: 0 0 10px rgba(255,255,255,.8); }
   .nu-linje span { position: absolute; top: -26px; left: -19px; width: 40px; text-align: center; font-size: 12px; font-weight: 700;
                    background: #fff; color: #0b0f24; border-radius: 10px; padding: 2px 0; letter-spacing: .5px; }
-  .dagsgrans { position: absolute; top: -12px; bottom: -48px; width: 0; border-left: 1px dashed rgba(255,255,255,.25); }
+  .dagsgrans { position: absolute; top: -12px; bottom: -48px; width: 0; border-left: 2px solid rgba(255,255,255,.45); margin-left: -1px; }
   .axel { position: relative; height: 26px; font-size: 13px; color: rgba(255,255,255,.5); }
   .axel span { position: absolute; top: 6px; margin-left: -18px; width: 36px; text-align: center; }
   .dagnamn { position: relative; height: 22px; font-size: 14px; font-weight: 600; color: rgba(255,255,255,.75); text-transform: uppercase; letter-spacing: 1px; }
@@ -617,7 +617,7 @@
     var stegLista = [0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 5], ySteg = 1;
     for (i = 0; i < stegLista.length; i++) { if ((hi - lo) / stegLista[i] <= 4) { ySteg = stegLista[i]; break; } }
     var bas = Math.floor(lo / ySteg) * ySteg; if (bas < 0 && lo >= 0) bas = 0;
-    var topp = Math.ceil(hi / ySteg) * ySteg; if (topp - hi < ySteg * 0.15) topp += ySteg;
+    var topp = Math.ceil(hi / ySteg) * ySteg; if (topp - hi < ySteg * 0.2) topp += ySteg;
     var min = bas, range = topp - bas;
 
     var h = "";
@@ -631,7 +631,7 @@
       h += '<div class="stapel" style="left:' + left.toFixed(3) + "%;width:" + (w * 0.8).toFixed(3) + "%;height:" + hojd.toFixed(1) +
            "%;background:" + NIVAER[k.niva].farg + ";background-image:linear-gradient(to bottom," + NIVAER[k.niva].ljus + "," + NIVAER[k.niva].farg + ")" + (forbi ? ";opacity:.22" : "") + '"></div>';
     }
-    for (var yv = bas + ySteg; yv < topp - ySteg * 0.01; yv += ySteg) {
+    for (var yv = bas + ySteg; yv < topp + ySteg * 0.01; yv += ySteg) {
       h += '<div class="ylinje" style="bottom:' + ((yv - bas) / range * 100).toFixed(2) + '%"><span>' + String(Math.round(yv * 100)) + '</span></div>';
     }
     h += '<div class="ylinje y0" style="bottom:0"><span>' + String(Math.round(bas * 100)) + '</span></div>';
@@ -647,12 +647,13 @@
     var a = "";
     for (var t = t0; t <= t1; t += steg * 3600000) {
       var tim = new Date(t).getHours();
-      if (t === t1) continue;
+      if (t === t1 || (harImorgon && t === imorgon)) continue;
       a += '<span style="left:' + ((t - t0) / span * 100).toFixed(3) + '%">' + tva(tim) + "</span>";
     }
     $("axel").innerHTML = a;
-    var dn = '<span style="left:0">Idag</span>';
-    if (harImorgon) dn += '<span style="left:' + ((imorgon - t0) / span * 100 + 1).toFixed(3) + '%">Imorgon</span>';
+    var mitt = (imorgon - t0) / span * 100;
+    var dn = harImorgon ? '<span style="left:0;width:' + mitt.toFixed(3) + '%;text-align:center">Idag</span>' : '<span style="left:0">Idag</span>';
+    if (harImorgon) dn += '<span style="left:' + mitt.toFixed(3) + '%;width:' + (100 - mitt).toFixed(3) + '%;text-align:center">Imorgon</span>';
     else dn += '<span style="right:0;color:#93a1b5;font-weight:normal">Morgondagens priser kommer runt kl 13</span>';
     $("dagnamn").innerHTML = dn;
 
