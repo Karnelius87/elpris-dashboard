@@ -718,6 +718,23 @@
   document.addEventListener("webkitfullscreenchange", visaTips, false);
   setTimeout(visaTips, 1000);
 
+  // ---------- Håll skärmen tänd medan sidan visas (Screen Wake Lock) ----------
+  var vakeLas = null;
+  function hallVaken() {
+    try {
+      if (navigator.wakeLock && !vakeLas && document.visibilityState === "visible") {
+        navigator.wakeLock.request("screen").then(function (l) {
+          vakeLas = l;
+          l.addEventListener("release", function () { vakeLas = null; });
+        })["catch"](function () {});
+      }
+    } catch (e) {}
+  }
+  document.addEventListener("visibilitychange", hallVaken, false);
+  document.addEventListener("click", hallVaken, false);
+  setInterval(hallVaken, 60000);
+  hallVaken();
+
   // ---------- Schema ----------
   var senasteDag = datumNyckel(new Date());
   function tick() {
